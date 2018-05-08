@@ -1,32 +1,40 @@
 import * as Http from "http";
 import * as Url from "url";
 
-let port: number = process.env.PORT;
-if (port == undefined)
-    port = 8100;
+namespace Server {
+    interface AssocStringString {
+        [key: string]: string;
+    }
 
-let server: Http.Server = Http.createServer();
-server.addListener("listening", handleListen);
-server.addListener("request", handleRequest);
-server.listen(port);
+    let port: number = process.env.PORT;
+    if (port == undefined)
+        port = 8100;
 
-function handleListen(): void {
-    console.log("Ich höre?");
-}
+    let server: Http.Server = Http.createServer();
+    server.addListener("listening", handleListen);
+    server.addListener("request", handleRequest);
+    server.listen(port);
 
-function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerResponse): void {
-    console.log("Ich höre Stimmen!");
+    function handleListen(): void {
+        console.log("Ich höre?");
+    }
 
-    let query: Url.Url = Url.parse(_request.url, true).query;
-    let a: number = parseInt(query["a"]);
-    let b: number = parseInt(query["b"]);
+    function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerResponse): void {
+        console.log("Ich höre Stimmen!");
 
+        let query: AssocStringString = Url.parse(_request.url, true).query;
+        let a: number = parseInt(query["a"]);
+        let b: number = parseInt(query["b"]);
 
-    _response.setHeader("content-type", "text/html; charset=utf-8");
-    _response.setHeader("Access-Control-Allow-Origin", "*");
-    
-    _response.write("Ich habe dich gehört<br/>");
-    _response.write("Das Ergebnis ist: " + (a + b));
+        for (let key in query) 
+            console.log(query[key]);
 
-    _response.end();
+        _response.setHeader("content-type", "text/html; charset=utf-8");
+        _response.setHeader("Access-Control-Allow-Origin", "*");
+
+        _response.write("Ich habe dich gehört<br/>");
+        _response.write("Das Ergebnis ist: " + (a + b));
+
+        _response.end();
+    }
 }
