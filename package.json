@@ -1,11 +1,11 @@
 {
-	"name" : "nodetest",
+	"name" : "Servertest",
 	"version" : "1.0.0",
 	"description" : "First Server Test",
 	"author" : "Jirka",
-	"main" : "NodeTest.js",
+	"main" : "Server.js",
 	"scripts" : {
-		"start" : "node NodeTest.js"
+		"start" : "node Server.js"
 	},
 	"engines" : {
 		"node" : "6.11.1"
