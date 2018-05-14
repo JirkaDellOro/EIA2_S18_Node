@@ -1,7 +1,7 @@
 import * as Http from "http";
 import * as Url from "url";
 
-namespace Server {
+namespace L05_Server {
     interface AssocStringString {
         [key: string]: string;
     }
