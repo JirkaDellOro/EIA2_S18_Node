@@ -1,30 +1,51 @@
+/**
+ * Simple server managing between client and database
+ * @author: Jirka Dell'Oro-Friedl
+ */
 "use strict";
 const Http = require("http");
 const Url = require("url");
-var L05_Server;
-(function (L05_Server) {
-    let port = process.env.PORT;
-    if (port == undefined)
-        port = 8100;
-    let server = Http.createServer();
-    server.addListener("listening", handleListen);
-    server.addListener("request", handleRequest);
-    server.listen(port);
-    function handleListen() {
-        console.log("Ich höre?");
+const Database = require("./Database");
+console.log("Server starting");
+let port = process.env.PORT;
+if (port == undefined)
+    port = 8100;
+let server = Http.createServer();
+server.addListener("listening", handleListen);
+server.addListener("request", handleRequest);
+server.listen(port);
+function handleListen() {
+    console.log("Listening on port: " + port);
+}
+function handleRequest(_request, _response) {
+    console.log("Request received");
+    let query = Url.parse(_request.url, true).query;
+    var command = query["command"];
+    switch (command) {
+        case "insert":
+            let student = {
+                name: query["name"],
+                firstname: query["firstname"],
+                matrikel: parseInt(query["matrikel"])
+            };
+            Database.insert(student);
+            respond(_response, "storing data");
+            break;
+        case "refresh":
+            Database.findAll(function (json) {
+                respond(_response, json);
+            });
+            break;
+        default:
+            respond(_response, "unknown command: " + command);
+            break;
     }
-    function handleRequest(_request, _response) {
-        console.log("Ich höre Stimmen!");
-        let query = Url.parse(_request.url, true).query;
-        let a = parseInt(query["a"]);
-        let b = parseInt(query["b"]);
-        for (let key in query)
-            console.log(query[key]);
-        _response.setHeader("content-type", "text/html; charset=utf-8");
-        _response.setHeader("Access-Control-Allow-Origin", "*");
-        _response.write("Ich habe dich gehört<br/>");
-        _response.write("Das Ergebnis ist: " + (a + b));
-        _response.end();
-    }
-})(L05_Server || (L05_Server = {}));
+}
+function respond(_response, _text) {
+    //console.log("Preparing response: " + _text);
+    _response.setHeader("Access-Control-Allow-Origin", "*");
+    _response.setHeader("content-type", "text/html; charset=utf-8");
+    _response.write(_text);
+    _response.end();
+}
 //# sourceMappingURL=Server.js.map
