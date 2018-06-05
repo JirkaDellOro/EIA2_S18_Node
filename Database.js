@@ -9,11 +9,13 @@ let databaseURL = "mongodb://localhost:27017";
 let databaseName = "Test";
 let db;
 let students;
+// wenn wir auf heroku sind...
 if (process.env.NODE_ENV == "production") {
     //    databaseURL = "mongodb://username:password@hostname:port/database";
     databaseURL = "mongodb://testuser:testpassword@ds129532.mlab.com:29532/eia2";
     databaseName = "eia2";
 }
+// handleConnect wird aufgerufen wenn der Versuch, die Connection zur Datenbank herzustellen, erfolgte
 Mongo.MongoClient.connect(databaseURL, handleConnect);
 function handleConnect(_e, _db) {
     if (_e)
